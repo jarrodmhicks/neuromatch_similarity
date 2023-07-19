@@ -28,6 +28,7 @@ def model_performance(outputs, targets):
 def set_device():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'Current device: {device}')
+    return device
 
 
 # TODO: write saving utility
