@@ -8,17 +8,17 @@ class Identity(nn.Module):
   def forward(self, features):
     return features # return features
 
-class DiagonalLinear(nn.Module):
+class LinearDiagonal(nn.Module):
   def __init__(self, n_features, sigma=0.01):
-    super(DiagonalLinear, self).__init__()
+    super(LinearDiagonal, self).__init__()
     self.diagonal = nn.Parameter(torch.randn(n_features) * sigma)
 
   def forward(self, features):
     return features * self.diagonal # equivalent to features @ torch.diag(self.diagonal)
 
-class FullLinear(nn.Module):
+class LinearFull(nn.Module):
   def __init__(self, n_features, sigma=0.01):
-    super(FullLinear, self).__init__()
+    super(LinearFull, self).__init__()
     self.transformation_matrix = nn.Parameter(torch.randn(n_features, n_features) * sigma)
 
   def forward(self, features):
