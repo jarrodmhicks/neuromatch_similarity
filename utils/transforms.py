@@ -24,4 +24,12 @@ class FullLinearTransform(nn.Module):
   def forward(self, features):
     return features @ self.transformation_matrix
 
+class LinearProjection(nn.Module):
+  def __init__(self, in_features, out_features, sigma=0.01):
+    super(LinearProjection, self).__init__()
+    self.transformation_matrix = nn.Parameter(torch.randn(in_features, out_features) * sigma)
+
+  def forward(self, features):
+    return features @ self.transformation_matrix
+
 # TODO: neural network transforms can go here
