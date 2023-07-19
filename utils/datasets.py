@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 import torch
+from torch.utils.data import Dataset
 
 class SimilarityDataset(Dataset):
-  def __init__(self, hold_out=0.1, device=device):
+  def __init__(self, device='cpu'):
 
     human_data_link = 'https://osf.io/download/h2smy/'
     df = pd.read_csv(human_data_link, delimiter='\t')
@@ -11,8 +12,6 @@ class SimilarityDataset(Dataset):
     human_decisions = torch.squeeze(torch.tensor(np.array(df[['choice']]), device=device)-1)
 
     self.total_samples = len(human_decisions)
-    self.n_train = int(round(self.total_samples * (1 - hold_out)))
-    self.n_test = int(self.total_samples - self.n_train)
     self.decisions = human_decisions
     self.triplets = image_indices
 
