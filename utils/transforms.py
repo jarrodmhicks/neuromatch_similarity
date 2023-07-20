@@ -32,6 +32,7 @@ class LinearProjection(nn.Module):
   def forward(self, features):
     return features @ self.projection_matrix
 
+#TODO: Make sure this works as expected
 class NNtransform(nn.Module):
   def __init__(self, transform_layers):
     super(NNtransform, self).__init__()
