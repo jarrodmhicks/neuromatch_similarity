@@ -32,4 +32,18 @@ class LinearProjection(nn.Module):
   def forward(self, features):
     return features @ self.projection_matrix
 
-# TODO: neural network transforms can go here
+#TODO: Make sure this works as expected
+class NNtransform(nn.Module):
+  def __init__(self, transform_layers):
+    super(NNtransform, self).__init__()
+    self.network = self.build_network(transform_layers)
+
+  def build_network(self, transform_layers):
+    layers = []
+    for layer in transform_layers:
+      layers.append(layer)
+      return nn.Sequential(*layers)
+
+  def forward(self, features):
+    transformed_features = self.network(features)
+    return transformed_features
