@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset
+from io import BytesIO
+import os
+import requests
 
 class SimilarityDataset(Dataset):
   def __init__(self, device='cpu'):
@@ -23,4 +26,10 @@ class SimilarityDataset(Dataset):
     decision = self.decisions[index]
     return triplet, decision
 
-# TODO: handle loading pre-computed network activations
+def NetworkFeatures(model_name, layer_name, device='cpu'):
+  url_prefix = 'https://mcdermottlab.mit.edu/jmhicks/neuromatch/network_features'
+  feature_dir = f'features_{model_name}_{layer_name}'
+  url = os.path.join(url_prefix, feature_dir, 'features.npy')
+  response = requests.get(url)
+  network_features = torch.from_numpy(np.load(BytesIO(response.content))).to(device)
+  return network_features
