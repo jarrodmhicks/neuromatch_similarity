@@ -32,4 +32,29 @@ class LinearProjection(nn.Module):
   def forward(self, features):
     return features @ self.projection_matrix
 
-# TODO: neural network transforms can go here
+class MLP(nn.Module):
+  def __init__(self, in_features, out_features, hidden_features=[], use_bias=True):    
+    super(MLP, self).__init__()
+
+    self.in_features = in_features
+    self.out_features = out_features
+
+    # If we have no hidden layer, just initialize a linear model
+    if len(hidden_features) == 0:
+      layers = [nn.Linear(in_features, out_features, bias=use_bias)]
+    else:
+      # MLP with dimensions in_dim - num_hidden_layers*[hidden_dim] - out_dim
+      layers = [nn.Linear(in_features, hidden_features[0], bias=use_bias), nn.ReLU()]
+
+      # Loop until before the last layer
+      for i, hidden_dim in enumerate(hidden_features[:-1]):
+        layers += [nn.Linear(hidden_dim, hidden_features[i + 1], bias=use_bias),
+                   nn.ReLU()]
+
+      # Add final layer to the number of classes
+      layers += [nn.Linear(hidden_features[-1], out_features, bias=use_bias)]
+
+    self.mlp = nn.Sequential(*layers)
+
+  def forward(self, features):   
+    return self.mlp(features)
