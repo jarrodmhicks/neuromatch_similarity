@@ -1,35 +1,33 @@
 import torch
-
-def train_model(features, model, optimizer, loss_function, train_loader, summary=True):
-  n_steps = len(train_loader)
-  for i, (triplets, targets) in enumerate(train_loader):
-    inputs = features[triplets,:]
-
-    # forward pass
-    outputs = model(inputs)
-    loss = loss_function(outputs, targets)
-
-    # backward and optimization step
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-
-    # print summary on last step of epoch
-    if ((i+1) == n_steps) & summary:
-      print(f'\tStep [{i+1}/{n_steps}], Loss: {loss.item():.6f}')
-
-  return loss.item()
-
-def model_performance(outputs, targets):
-  model_decisions = torch.argmax(outputs, dim=1)
-  performance = torch.sum(model_decisions == targets) / len(targets)
-  return performance.item()
+import os.path as osp
+import random
+import numpy as np
 
 def set_device():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'Current device: {device}')
     return device
 
+def relative(relative_path):    
+    return osp.join(osp.dirname(osp.abspath(__file__)), relative_path)
+
+def set_seed(seed=None, seed_torch=True):  
+  if seed is None:
+    seed = np.random.choice(2 ** 32)
+  random.seed(seed)
+  np.random.seed(seed)
+  if seed_torch:
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+  print(f'Random seed {seed} has been set.')
+
+def seed_worker(worker_id):  
+  worker_seed = torch.initial_seed() % 2**32
+  np.random.seed(worker_seed)
+  random.seed(worker_seed)
 
 # TODO: write saving utility
 '''
