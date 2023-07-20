@@ -58,3 +58,18 @@ class MLP(nn.Module):
 
   def forward(self, features):   
     return self.mlp(features)
+
+#TODO: Make sure this works as expected
+class NeuralNet(nn.Module):
+  def __init__(self, transform_layers):
+    super(NeuralNet, self).__init__()
+    self.network = self.build_network(transform_layers)
+
+  def build_network(self, transform_layers):
+    layers = []
+    for layer in transform_layers:
+      layers.append(layer)
+      return nn.Sequential(*layers)
+
+  def forward(self, features):
+    return self.network(features)
