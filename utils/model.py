@@ -43,4 +43,18 @@ def train(features, model, optimizer, loss_function, train_loader, num_epochs, s
       summary = False
     train_loss = train_epoch(features, model, optimizer, loss_function, train_loader, summary=summary)
     train_losses.append(train_loss)
-  return train_losses
+  return train_losses, model # TODO: update to output "optimized_model"
+
+def test(network_features, model, test_loader):
+  performances = []
+  weights = []
+  for i, (triplets, targets) in enumerate(test_loader):
+      inputs = network_features[triplets,:]
+      outputs = model(inputs)
+      performances.append(model_performance(outputs, targets))
+      weights.append(len(inputs))
+  performances = torch.tensor(performances)
+  weights = torch.tensor(weights)
+  weights = weights / weights.sum()
+  final_performance = torch.sum(weights * performances)
+  return final_performance
