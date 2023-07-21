@@ -30,7 +30,71 @@ def seed_worker(worker_id):
   random.seed(worker_seed)
 
 # TODO: write saving utility
-'''
-should save final model, performance, and specifications (e.g,. which network
-activations were used, which transform, which distance, what seed)
-'''
+class util_log:
+    def __init__(self):
+        self.device = ""
+        self.seed = 1
+        self.model = {
+            "data_transform": "",
+            "model": ""
+        }
+        self.data = {
+            "human_decision": "",
+            "feature_map": ""
+        }
+        self.utils = {
+            "loss_function": "",
+            "optimizer": "",
+            "learning_rate": 0.01,
+            "n_trials": 100000,
+            "hold_out": 0.1,
+            "num_epochs": 30,
+            "batch_size": 10000,
+            "summary_every": 10,
+            "momentum": "",
+            "regularizer": ""
+        }
+        self.results = {
+            "train": {
+                "zero_shot": 0,
+                "transformed": 0
+            },
+            "test": {
+                "zero_shot": 0,
+                "transformed": 0
+            }
+        }
+        self.find("device", device)
+        self.find("seed", seed)
+        self.find("[model]", model)
+        self.find("[data][human_decision]", human_decision)
+        self.find("[data][feature_map]", feature_map)
+        self.find("[utils][loss_function]", loss_function)
+        self.find("[utils][optimizer]", optimizer)
+        self.find("[utils][learning_rate]", learning_rate)
+        self.find("[utils][n_trials]", n_trials)
+        self.find("[utils][hold_out]", hold_out)
+        self.find("[utils][num_epochs]", num_epochs)
+        self.find("[utils][batch_size]", batch_size)
+        self.find("[utils][summary_every]", summary_every)
+        # self.find("[utils][momentum]", momentum)
+        # self.find("[utils][regularizer]", regularizer)
+        self.find("[results][train][zero_shot]", train_zero_shot)
+        self.find("[results][train][transformed]", train_transformed)
+        # self.find("[results][test][zero_shot]", test_zero_shot)
+        # self.find("[results][test][transformed]", test_transformed)
+
+    def __str__(self):
+        return str(self.__dict__)
+
+    def find(self, key, value):
+        keys = key.split('][')
+        current_dict = self.__dict__
+        for k in keys[:-1]:
+            k = k.strip('[]')
+            if k not in current_dict:
+                current_dict[k] = {}
+            current_dict = current_dict[k]
+        last_key = keys[-1].strip('[]')
+        if last_key in current_dict:
+            current_dict[last_key] = value
