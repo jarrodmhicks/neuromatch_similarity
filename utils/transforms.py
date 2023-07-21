@@ -2,11 +2,11 @@ import torch
 from torch import nn
 
 class Identity(nn.Module):
-  def __init__(self):
+  def __init__(self, in_features):
     super(Identity, self).__init__()
 
   def forward(self, features):
-    return features # return features
+    return features 
 
 class LinearDiagonal(nn.Module):
   def __init__(self, n_features, sigma=0.01):
