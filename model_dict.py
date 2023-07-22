@@ -2,7 +2,9 @@ import os
 
 # Configure your models here:
     #Keys 'model_name_shorthand'
-    #Values {'model_name': '$model_name', 'module name': '$model_layer', '
+    #Values {'model_name': 'your_model_name, 
+    #'module_name': 'penultimate_layer, 
+    #'source': 'torchvision or custom'}
 configs = {
     'vgg16': {'model_name': 'vgg16', 
             'module_name': 'features.23',
