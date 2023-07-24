@@ -18,8 +18,6 @@ networks = [{'model_name': 'alexnet',
 
 # fixed parameters
 seed = 0
-model_name = 'alexnet'
-layer_name = 'classifier.5'
 summary_every = 10
 hold_out = 0.2
 batch_size = 10000
