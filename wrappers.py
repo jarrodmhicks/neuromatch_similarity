@@ -1,5 +1,6 @@
 from neuromatch_similarity import utils
 import torch
+import os
 
 # example usage
 
@@ -19,7 +20,7 @@ import torch
 #                        'batch_size': 1000,
 #                        'hold_out': 0.2}}
 # train_losses, optimized_model, test_performance = nms.fit(params)
-# filename = '/full/path/to/file.pt'
+# filename = os.path.relpath('../results/model_info.pt')
 # nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 def fit(params):
@@ -58,4 +59,9 @@ def save(filename, params, train_losses, optimized_model, test_performance):
                    'train_losses': train_losses,
                    'model_state_dict': optimized_model.state_dict(),
                    'test_performance': test_performance}
+     
+     path, _ = os.path.split(filename)
+     if not os.path.exists(path):
+          os.mkdir(path)
+
      torch.save(model_info, filename)
