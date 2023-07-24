@@ -56,5 +56,5 @@ def test(network_features, model, test_loader):
   performances = torch.tensor(performances)
   weights = torch.tensor(weights)
   weights = weights / weights.sum()
-  final_performance = torch.sum(weights * performances)
+  final_performance = torch.sum(weights * performances).item()
   return final_performance
