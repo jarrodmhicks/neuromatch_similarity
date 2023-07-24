@@ -1,4 +1,5 @@
 from neuromatch_similarity import utils
+import torch
 
 # example usage
 
@@ -18,6 +19,8 @@ from neuromatch_similarity import utils
 #                        'batch_size': 1000,
 #                        'hold_out': 0.2}}
 # train_losses, optimized_model, test_performance = nms.fit(params)
+# filename = '/full/path/to/file.pt'
+# nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 def fit(params):
     train_loader, test_loader = utils.datasets.LoadSimilarityDataset(batch_size=params['training']['batch_size'],
@@ -50,5 +53,9 @@ def fit(params):
 
     return train_losses, optimized_model, test_performance
 
-def save(params, train_losses, optimized_model, test_performance):
-     pass # TODO write saving function      
+def save(filename, params, train_losses, optimized_model, test_performance):
+     model_info = {'params': params,
+                   'train_losses': train_losses,
+                   'model_state_dict': optimized_model.state_dict(),
+                   'test_performance': test_performance}
+     torch.save(model_info, filename)
