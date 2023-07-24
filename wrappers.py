@@ -5,7 +5,7 @@ import os
 # example usage
 
 # import neuromatch_similarity as nms
-# params = {'device': nms.utils.helpers.set_device(),
+# params = {'device': nms.utils.helpers.set_device,
 #           'seed': 2021,
 #           'network_features': {'model_name': 'alexnet',
 #                                'layer_name': 'classifier.5'},
@@ -26,18 +26,18 @@ import os
 def fit(params):
     train_loader, test_loader = utils.datasets.LoadSimilarityDataset(batch_size=params['training']['batch_size'],
                                                                    seed=params['seed'],
-                                                                   device=params['device'],
+                                                                   device=params['device'](),
                                                                    hold_out=params['training']['hold_out'])
     network_features = utils.datasets.NetworkFeatures(model_name=params['network_features']['model_name'],
                                                     layer_name=params['network_features']['layer_name'],
-                                                    device=params['device'])
+                                                    device=params['device']())
     in_features = network_features.shape[1]
     if not params['model']['transform_kwargs']:
             transform = params['model']['transform'](in_features)
     else:
         transform = params['model']['transform'](in_features, **params['model']['transform_kwargs'])    
     distance = params['model']['distance']()
-    model = utils.model.DistanceModel(transform, distance).to(params['device'])
+    model = utils.model.DistanceModel(transform, distance).to(params['device']())
 
     if not (list(model.parameters())): # if model has no trainable parameters (e.g., in zero-shot case using nms.utils.transforms.Identity)
         train_losses = []        
