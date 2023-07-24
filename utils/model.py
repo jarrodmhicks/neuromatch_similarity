@@ -44,3 +44,32 @@ def train(features, model, optimizer, loss_function, train_loader, num_epochs, s
     train_loss = train_model(features, model, optimizer, loss_function, train_loader, summary=summary)
     train_losses.append(train_loss)
   return train_losses
+
+def train2(features, model, optimizer, loss_function, train_loader, num_epochs, summary_every, patience, tol):
+  import copy
+
+  train_losses = []
+  curr_model = copy.deepcopy(model)
+  counter = 0
+  for epoch in range(num_epochs):
+
+    #print training progress
+    if (epoch+1) % summary_every == 0:
+      print(f'Epoch [{epoch+1}/{num_epochs}]')
+      summary = True
+    else:
+      summary = False
+
+    # compute loss for current training epoch
+    train_loss = train_model(features, model, optimizer, loss_function, train_loader, summary=summary)
+    train_losses.append(train_loss)
+
+    #check loss tolerance
+    if (-torch.diff(train_losses[-2:])>tol): #if model improves greater than tolerance
+      curr_model = copy.deepcopy(model) #update current best model
+      counter = 0 #reset counter to 0
+    else:
+      counter = counter + 1
+      if counter == patience: #stop training if model no longer improves
+        break
+  return train_losses, curr_model
