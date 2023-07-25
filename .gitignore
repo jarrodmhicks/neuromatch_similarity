@@ -4,3 +4,4 @@
 notebooks/launch_jupyter_notebook.sh
 results
 params
+checkpoints
