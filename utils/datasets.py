@@ -85,5 +85,5 @@ def NetworkFeatures(model_name, layer_name, device='cpu'):
   feature_dir = f'features_{model_name}_{layer_name}'
   url = os.path.join(url_prefix, feature_dir, 'features.npy')
   response = requests.get(url)
-  network_features = torch.from_numpy(np.load(BytesIO(response.content))).to(device)
+  network_features = torch.from_numpy(np.load(BytesIO(response.content))).to(dtype=torch.float32, device=device)
   return network_features
