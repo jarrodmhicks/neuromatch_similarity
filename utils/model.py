@@ -1,5 +1,7 @@
 import torch
 from torch import nn
+import copy
+from neuromatch_similarity.utils.helpers import relative, save_checkpoint
 
 class DistanceModel(nn.Module):
   def __init__(self, transform, distance):
@@ -30,20 +32,39 @@ def train_epoch(features, model, optimizer, loss_function, train_loader, summary
     optimizer.step()
     # print summary on last step of epoch
     if ((i+1) == n_steps) & summary:
-      print(f'\tStep [{i+1}/{n_steps}], Loss: {loss.item():.6f}')
+      print(f'\tStep [{i+1}/{n_steps}], Loss: {loss.item():.6f}', flush=True)
   return loss.item()
 
-def train(features, model, optimizer, loss_function, train_loader, num_epochs, summary_every):
-  train_losses = []
+def train(model_name, features, model, optimizer, loss_function, train_loader, 
+          num_epochs, summary_every, patience=10, tol=0.001):
+  train_losses=[]
+  curr_model = copy.deepcopy(model)
+  counter = 0
   for epoch in range(num_epochs):
+
+    #print training progress
     if (epoch+1) % summary_every == 0:
-      print(f'Epoch [{epoch+1}/{num_epochs}]')
+      print(f'Epoch [{epoch+1}/{num_epochs}]', flush=True)
       summary = True
     else:
       summary = False
+   
+  # compute loss for current training epoch
     train_loss = train_epoch(features, model, optimizer, loss_function, train_loader, summary=summary)
     train_losses.append(train_loss)
-  return train_losses, model # TODO: update to output "optimized_model"
+    if epoch > 0:
+      #check loss tolerance
+      if (-torch.diff(torch.tensor(train_losses[-2:]))>tol): #if model improves greater than tolerance
+        curr_model = copy.deepcopy(model) #update current best model
+        counter = 0 #reset counter to 0
+        filename = relative(f'../checkpoints/{model_name}.pt')
+        save_checkpoint(filename, train_losses, curr_model)
+      else:
+        counter = counter + 1
+    
+    if counter == patience: #stop training if model no longer improves
+      break
+  return train_losses, curr_model
 
 def test(network_features, model, test_loader):
   performances = []

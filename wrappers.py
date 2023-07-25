@@ -5,6 +5,8 @@ import os
 # example usage
 
 # import neuromatch_similarity as nms
+# import torch
+# from torch import nn
 # params = {'device': nms.utils.helpers.set_device,
 #           'seed': 2021,
 #           'network_features': {'model_name': 'alexnet',
@@ -19,15 +21,18 @@ import os
 #                        'summary_every': 1,
 #                        'batch_size': 1000,
 #                        'hold_out': 0.2}}
+# params['model_name'] = 'MODELNAMEGOESHERE'
 # train_losses, optimized_model, test_performance = nms.fit(params)
-# filename = os.path.relpath('../results/model_info.pt')
+# filename = os.path.relpath('../results/model_info.pt') # wherever you want...
 # nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 def fit(params):
+    print('\tLoading human data', flush=True)
     train_loader, test_loader = utils.datasets.LoadSimilarityDataset(batch_size=params['training']['batch_size'],
                                                                    seed=params['seed'],
                                                                    device=params['device'](),
                                                                    hold_out=params['training']['hold_out'])
+    print('\tLoading network features', flush=True)
     network_features = utils.datasets.NetworkFeatures(model_name=params['network_features']['model_name'],
                                                     layer_name=params['network_features']['layer_name'],
                                                     device=params['device']())
@@ -42,14 +47,16 @@ def fit(params):
     if not (list(model.parameters())): # if model has no trainable parameters (e.g., in zero-shot case using nms.utils.transforms.Identity)
         train_losses = []        
         optimized_model = model
-    else:         
+    else:     
+        print('\tTraining model', flush=True)    
         loss_function = params['training']['loss_function']()
         optimizer = params['training']['optimizer'](model.parameters(), 
                                                     lr=params['training']['learning_rate'])
-        train_losses, optimized_model = utils.model.train(network_features, model, optimizer, 
-                                                        loss_function, train_loader, 
-                                                        params['training']['num_epochs'], 
-                                                        params['training']['summary_every'])    
+        train_losses, optimized_model = utils.model.train(params['model_name'], network_features, model, 
+                                                          optimizer, loss_function, train_loader, 
+                                                          params['training']['num_epochs'], 
+                                                          params['training']['summary_every'])    
+    print('\tTesting model', flush=True)
     test_performance = utils.model.test(network_features, optimized_model, test_loader)
 
     return train_losses, optimized_model, test_performance
