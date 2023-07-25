@@ -32,7 +32,7 @@ def train_epoch(features, model, optimizer, loss_function, train_loader, summary
     optimizer.step()
     # print summary on last step of epoch
     if ((i+1) == n_steps) & summary:
-      print(f'\tStep [{i+1}/{n_steps}], Loss: {loss.item():.6f}')
+      print(f'\tStep [{i+1}/{n_steps}], Loss: {loss.item():.6f}', flush=True)
   return loss.item()
 
 def train(model_name, features, model, optimizer, loss_function, train_loader, 
@@ -44,7 +44,7 @@ def train(model_name, features, model, optimizer, loss_function, train_loader,
 
     #print training progress
     if (epoch+1) % summary_every == 0:
-      print(f'Epoch [{epoch+1}/{num_epochs}]')
+      print(f'Epoch [{epoch+1}/{num_epochs}]', flush=True)
       summary = True
     else:
       summary = False
