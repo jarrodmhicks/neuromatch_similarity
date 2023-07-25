@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=nms
-#SBATCH --output=outputs/nms_%j_%a.out
-#SBATCH --error=outputs/nms_%j_%a.err
+#SBATCH --output=outputs/nms_%a.out
+#SBATCH --error=outputs/nms_%a.err
 #SBATCH --mem=32G
 #SBATCH --time=24:00:00
 #SBATCH --cpus-per-task=12
