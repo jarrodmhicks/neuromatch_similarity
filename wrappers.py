@@ -46,10 +46,10 @@ def fit(params):
         loss_function = params['training']['loss_function']()
         optimizer = params['training']['optimizer'](model.parameters(), 
                                                     lr=params['training']['learning_rate'])
-        train_losses, optimized_model = utils.model.train(network_features, model, optimizer, 
-                                                        loss_function, train_loader, 
-                                                        params['training']['num_epochs'], 
-                                                        params['training']['summary_every'])    
+        train_losses, optimized_model = utils.model.train(params['model_name'], network_features, model, 
+                                                          optimizer, loss_function, train_loader, 
+                                                          params['training']['num_epochs'], 
+                                                          params['training']['summary_every'])    
     test_performance = utils.model.test(network_features, optimized_model, test_loader)
 
     return train_losses, optimized_model, test_performance
