@@ -5,6 +5,8 @@ import os
 # example usage
 
 # import neuromatch_similarity as nms
+# import torch
+# from torch import nn
 # params = {'device': nms.utils.helpers.set_device,
 #           'seed': 2021,
 #           'network_features': {'model_name': 'alexnet',
@@ -19,8 +21,9 @@ import os
 #                        'summary_every': 1,
 #                        'batch_size': 1000,
 #                        'hold_out': 0.2}}
+# params['model_name'] = 'MODELNAMEGOESHERE'
 # train_losses, optimized_model, test_performance = nms.fit(params)
-# filename = os.path.relpath('../results/model_info.pt')
+# filename = os.path.relpath('../results/model_info.pt') # wherever you want...
 # nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 def fit(params):
