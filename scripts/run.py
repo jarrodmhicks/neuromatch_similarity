@@ -8,22 +8,19 @@ import neuromatch_similarity as nms
 
 def load_params(params_name):
     params = torch.load(params_name) # path to file saved as 'model#_params.pt'
-
     _, file_name = os.path.split(params_name)
     prefix, _ = os.path.splitext(file_name)
     model_name = prefix[:-7] # removes '_params' from file name
-    
-    return params, model_name
+    params['model_name'] = model_name
+    return params
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--params', type=str, help='path to experiment parameters file')
-    
+    parser.add_argument('--params', type=str, help='path to experiment parameters file')    
     args = parser.parse_args()
-    params, model_name = load_params(args.params)
-
+    params = load_params(args.params)
     train_losses, optimized_model, test_performance = nms.fit(params)
-    filename = nms.utils.helpers.relative(f'../results/{model_name}.pt')
+    filename = nms.utils.helpers.relative(f'../results/{params["model_name"]}.pt')
     nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 if __name__ == "__main__":
