@@ -57,8 +57,6 @@ def UnbiasedTrainTestSplit(dataset, seed=2021, device='cpu', hold_out=0.1):
 def LoadSimilarityDataset(batch_size, seed=2021, device='cpu', hold_out=0.01):
   dataset = SimilarityDataset(device=device)
   train_indices, test_indices = UnbiasedTrainTestSplit(dataset, seed=seed, device=device, hold_out=hold_out)
-  print(len(train_indices))
-  print(len(test_indices))
   
   set_seed(seed)
   g_seed = torch.Generator()

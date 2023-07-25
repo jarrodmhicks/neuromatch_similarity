@@ -19,7 +19,7 @@ def model_performance(outputs, targets):
   performance = torch.sum(model_decisions == targets) / len(targets)
   return performance.item()
 
-def train_model(features, model, optimizer, loss_function, train_loader, summary=True):
+def train_epoch(features, model, optimizer, loss_function, train_loader, summary=True):
   n_steps = len(train_loader)
   for i, (triplets, targets) in enumerate(train_loader):
     inputs = features[triplets,:]
@@ -47,8 +47,8 @@ def train(features, model, optimizer, loss_function, train_loader, num_epochs, s
       summary = True
     else:
       summary = False
-
-    # compute loss for current training epoch
+   
+  # compute loss for current training epoch
     train_loss = train_model(features, model, optimizer, loss_function, train_loader, summary=summary)
     train_losses.append(train_loss)
     if epoch > 0:
@@ -62,3 +62,18 @@ def train(features, model, optimizer, loss_function, train_loader, num_epochs, s
     if counter == patience: #stop training if model no longer improves
       break
   return train_losses, curr_model
+
+
+def test(network_features, model, test_loader):
+  performances = []
+  weights = []
+  for i, (triplets, targets) in enumerate(test_loader):
+      inputs = network_features[triplets,:]
+      outputs = model(inputs)
+      performances.append(model_performance(outputs, targets))
+      weights.append(len(inputs))
+  performances = torch.tensor(performances)
+  weights = torch.tensor(weights)
+  weights = weights / weights.sum()
+  final_performance = torch.sum(weights * performances).item()
+  return final_performance
