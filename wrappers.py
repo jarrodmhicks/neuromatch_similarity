@@ -24,10 +24,12 @@ import os
 # nms.save(filename, params, train_losses, optimized_model, test_performance)
 
 def fit(params):
+    print('\tLoading human data', flush=True)
     train_loader, test_loader = utils.datasets.LoadSimilarityDataset(batch_size=params['training']['batch_size'],
                                                                    seed=params['seed'],
                                                                    device=params['device'](),
                                                                    hold_out=params['training']['hold_out'])
+    print('\tLoading network features', flush=True)
     network_features = utils.datasets.NetworkFeatures(model_name=params['network_features']['model_name'],
                                                     layer_name=params['network_features']['layer_name'],
                                                     device=params['device']())
@@ -42,7 +44,8 @@ def fit(params):
     if not (list(model.parameters())): # if model has no trainable parameters (e.g., in zero-shot case using nms.utils.transforms.Identity)
         train_losses = []        
         optimized_model = model
-    else:         
+    else:     
+        print('\tTraining model', flush=True)    
         loss_function = params['training']['loss_function']()
         optimizer = params['training']['optimizer'](model.parameters(), 
                                                     lr=params['training']['learning_rate'])
@@ -50,6 +53,7 @@ def fit(params):
                                                           optimizer, loss_function, train_loader, 
                                                           params['training']['num_epochs'], 
                                                           params['training']['summary_every'])    
+    print('\tTesting model', flush=True)
     test_performance = utils.model.test(network_features, optimized_model, test_loader)
 
     return train_losses, optimized_model, test_performance

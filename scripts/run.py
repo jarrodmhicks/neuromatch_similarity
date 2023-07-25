@@ -18,8 +18,11 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('--params', type=str, help='path to experiment parameters file')    
     args = parser.parse_args()
+    print('Loading params', flush=True)
     params = load_params(args.params)
+    print('Fitting similarity model', flush=True)
     train_losses, optimized_model, test_performance = nms.fit(params)
+    print('Saving results', flush=True)
     filename = nms.utils.helpers.relative(f'../results/{params["model_name"]}.pt')
     nms.save(filename, params, train_losses, optimized_model, test_performance)
 
