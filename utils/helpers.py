@@ -5,7 +5,7 @@ import numpy as np
 
 def set_device():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f'Current device: {device}')
+    print(f'Current device: {device}', flush=True)
     return device
 
 def relative(relative_path):    
@@ -22,7 +22,7 @@ def set_seed(seed=None, seed_torch=True):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-  print(f'Random seed {seed} has been set.')
+  print(f'Random seed {seed} has been set.', flush=True)
 
 def seed_worker(worker_id):  
   worker_seed = torch.initial_seed() % 2**32
