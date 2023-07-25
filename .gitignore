@@ -2,3 +2,5 @@
 **/.ipynb_checkpoints
 **/outputs
 notebooks/launch_jupyter_notebook.sh
+results
+params
