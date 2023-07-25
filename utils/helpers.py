@@ -1,5 +1,5 @@
 import torch
-import os.path as osp
+import os
 import random
 import numpy as np
 
@@ -9,7 +9,7 @@ def set_device():
     return device
 
 def relative(relative_path):    
-    return osp.join(osp.dirname(osp.abspath(__file__)), relative_path)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
 def set_seed(seed=None, seed_torch=True):  
   if seed is None:
@@ -29,8 +29,12 @@ def seed_worker(worker_id):
   np.random.seed(worker_seed)
   random.seed(worker_seed)
 
-# TODO: write saving utility
-'''
-should save final model, performance, and specifications (e.g,. which network
-activations were used, which transform, which distance, what seed)
-'''
+def save_checkpoint(filename, train_losses, optimized_model):
+  model_info = {'train_losses': train_losses,
+                'model_state_dict': optimized_model.state_dict()}
+     
+  path, _ = os.path.split(filename)
+  if not os.path.exists(path):
+      os.mkdir(path)
+
+  torch.save(model_info, filename)
