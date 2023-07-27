@@ -2,11 +2,11 @@
 #SBATCH --job-name=nms
 #SBATCH --output=outputs/nms_%a.out
 #SBATCH --error=outputs/nms_%a.err
-#SBATCH --mem=32G
+#SBATCH --mem=8G
 #SBATCH --time=24:00:00
-#SBATCH --cpus-per-task=12
+#SBATCH --cpus-per-task=4
 #SBATCH --partition=normal
-#SBATCH --array=1-216%24
+#SBATCH --array=1-165%33
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jmhicks@mit.edu
 #SBATCH --gres=gpu:1
