@@ -3,20 +3,18 @@ sys.path.append('/om2/user/jmhicks/projects/NeuroMatchSimilarity/code/')
 import neuromatch_similarity as nms
 import os
 import torch
+from glob import glob
+import numpy as np
 
 # parameters to loop over
 learning_rates = [0.1, 0.01, 0.001, 0.0001]
 
-networks = [{'model_name': 'alexnet',
-             'layer_name': 'classifier.5'},
-            {'model_name': 'clip',
-             'layer_name': 'visual'},
-            {'model_name': 'efficientnet_b0_None',
-             'layer_name': 'classifier.0'},
-            {'model_name': 'resnet50_None',
-             'layer_name': 'avgpool'},
-            {'model_name': 'vgg16_None',
-             'layer_name': 'classifier.4'}]
+networks = [{'model_name': 'Harmonization_EfficientNetB0',
+             'layer_name': 'avg_pool'},
+            {'model_name': 'Harmonization_ResNet50',
+             'layer_name': 'avg_pool'},
+            {'model_name': 'Harmonization_VGG16',
+             'layer_name': 'fc2'}]
 projection_dims = (2 ** torch.linspace(1, 7, 7)).int().tolist() # 2 to 128
 
 # fixed parameters
@@ -31,11 +29,13 @@ distance = nms.utils.distances.Cosine
 transform = nms.utils.transforms.LinearProjection
 
 def make_and_save_params():
-    param_dir = nms.utils.helpers.relative('../params/')
-    if not os.path.exists(param_dir):
-         os.mkdir(param_dir)
 
-    counter = 0
+    files = glob('../params/model*_params.pt')
+    file_nums = []
+    for file in files:
+        file_nums.append(file[15:-10])
+    counter = np.max(np.array(file_nums, dtype=int))
+
     for network in networks: # only once per network with identity transform
         counter += 1
         params = {'device': nms.utils.helpers.set_device,
